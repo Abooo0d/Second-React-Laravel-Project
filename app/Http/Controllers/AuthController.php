@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-  public function signup(SignUpRequest $request){
+  public function signup(SignUpRequest $request)
+  {
     /** @var User $user */
     $data = $request->validated();
     $user = User::create([
@@ -20,34 +21,37 @@ class AuthController extends Controller
       "password" => bcrypt($data["password"])
     ]);
     $token = $user->createToken("main")->plainTextToken;
-    return([
+    return ([
       'user' => $user,
       "token" => $token
     ]);
   }
-  public function login(LoginRequest $request){
+  public function login(LoginRequest $request)
+  {
     $credentials = $request->validated();
-    $remember = $credentials["remember"] ?? false;
     unset($credentials["remember"]);
-    if(!Auth::attempt($credentials,$remember)){
+    if (!Auth::attempt($credentials)) {
       return response([
         "error" => "The Provided Credentials Are Not Correct"
-      ],422);
+      ], 422);
     }
     /** @var User $user */
     $user = Auth::user();
-    $token =  $user->createToken('main')->plainTextToken;
+    $token = $user->createToken('main')->plainTextToken;
     return response([
       "user" => $user,
+      "user_rem" => $user->remember_token,
       "token" => $token
     ]);
   }
-  public function logout(Request $request){
-    /** @var User $user  */
-    $user = Auth::user();
-    $user->currentAccessToken()->delete();
-    return response([
-      "success" => true
-    ]);
+  public function logout(Request $request)
+  {
+      /** @var User $user */
+      $user = Auth::user();
+      // Revoke the token that was used to authenticate the current request...
+      $user->currentAccessToken()->delete();
+      return response([
+        'success' => true
+      ]);
   }
 }

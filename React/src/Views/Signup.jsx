@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../AxiosClient/Axios";
+import { useStateContext } from "../Contexts/ContextProvider";
 
 export default function SignUp() {
+  const {setCurrentUser,setUserToken} = useStateContext();
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,15 +21,12 @@ export default function SignUp() {
         password_confirmation: passwordConfirmation,
       })
       .then(({ data }) => {
-        console.log(data);
+        setCurrentUser(data.user);
+        setUserToken(data.token);
       })
       .catch((error) => {
-        if(error.response){
-          const finalError = Object.values(error.response.data.errors).reduce((accum,next) => [...accum,...next],[])
-          console.log(error);
-          setError({__html:finalError.join("<br/>")});
-        }
-        console.error(error);
+        const finaleError = Object.values(error.response.data.errors).reduce((accum,next)=>[...next,...accum],[]);
+        setError({__html:finaleError.join("<br/>")});
       });
   };
   return (
@@ -36,9 +35,6 @@ export default function SignUp() {
         Create Account For Free
       </h2>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        {error.__html && (<div className="bg-red-500 rounded py-2 px-3 text-white"
-          dangerouslySetInnerHTML = {error}>
-        </div>)}
         <form
           className="space-y-6"
           action="#"
@@ -57,6 +53,8 @@ export default function SignUp() {
                 id="full-name"
                 name="full-name"
                 required
+                value={fullname}
+                onChange={(ev) => setFullname(ev.target.value)}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Full Name"
               />
@@ -76,6 +74,8 @@ export default function SignUp() {
                 type="email"
                 autoComplete="email"
                 required
+                value={email}
+                onChange={(ev) => setEmail(ev.target.value)}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Email Address"
               />
@@ -97,6 +97,8 @@ export default function SignUp() {
                 type="password"
                 autoComplete="current-password"
                 required
+                value={password}
+                onChange={(ev) => setPassword(ev.target.value)}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Password"
               />
@@ -117,6 +119,8 @@ export default function SignUp() {
                 name="password_confirmation"
                 type="password"
                 required
+                value={passwordConfirmation}
+                onChange={(ev) => setPasswordConfirmation(ev.target.value)}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Password confirmation"
               />
@@ -131,7 +135,7 @@ export default function SignUp() {
             </button>
           </div>
         </form>
-        <p className="mt-10 text-center text-sm text-gray-500">
+        <p className="my-5 text-center text-sm text-gray-500">
           Not a member?{" "}
           <Link
             to="/login"
@@ -140,6 +144,12 @@ export default function SignUp() {
             Login With your Account
           </Link>
         </p>
+        {error.__html && (
+          <div
+            className="bg-red-500 rounded py-2 px-3 text-white"
+            dangerouslySetInnerHTML={error}
+          ></div>
+        )}
       </div>
     </>
   );

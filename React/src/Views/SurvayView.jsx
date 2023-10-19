@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Page from "../Components/PageComponent";
 import { HiOutlinePhoto } from "react-icons/hi2";
 import TButton from "../Components/Core/TButton";
+import axiosClint from "../AxiosClient/Axios";
 
 export default function SurvayView() {
   const [survay, setSurvay] = useState({
@@ -16,7 +17,15 @@ export default function SurvayView() {
   });
   const onSubmit = (ev) => {
     ev.preventDefault();
-    console.log("Submit");
+    axiosClint.post("survay",{
+      title:"Abood Item 1",
+      description: "Test",
+      expire_date:"11/4/2024",
+      status:true
+    }).then()
+    .catch(err => {
+      console.log(err);
+    })
   };
   const onImageChange = () => {
     console.log("Image Changed");

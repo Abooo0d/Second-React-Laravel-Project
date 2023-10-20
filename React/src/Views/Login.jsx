@@ -19,11 +19,8 @@ export default function Login() {
       .then(({ data }) => {
         setCurrentUser(data.user);
         setUserToken(data.token);
-        // console.log(data.user);
-        console.log("LogIn");
       })
       .catch((error) => {
-        console.log(error);
         const finaleError = error.response.data.error;
         setError({__html:finaleError});
       });

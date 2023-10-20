@@ -10,6 +10,7 @@ use App\Models\SurvayQuestion;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
 use Request;
@@ -24,7 +25,7 @@ class SurvayController extends Controller
   public function index(Request $request)
   {
     $user = $request->user();
-    return SurvayResource::collection(Survay::where("user_id",$user->id)->orderBy("created_ad","desc")->paginate(10));
+    return SurvayResource::collection(Survay::where("user_id",$user->id)->orderBy("created_at","desc")->paginate(10));
   }
 
   /**
@@ -42,7 +43,7 @@ class SurvayController extends Controller
       $data["image"] = $relativePath;
     }
     $survay = Survay::create($data);
-    foreach ($data["question"] as $question) {
+    foreach ($data["questions"] as $question) {
       $this->createQuestion($question);
     }
     return new SurvayResource($survay);
@@ -57,7 +58,7 @@ class SurvayController extends Controller
   public function show(Survay $survay ,Request $request)
   {
     $user = $request->validated();
-    if($user->id !== $survay->survay_id){
+    if($user->id !== $survay->user_id){
       return abort(403,"Unauthorized Action");
     }
     return new SurvayResource($survay);
@@ -74,7 +75,8 @@ class SurvayController extends Controller
   {
     $data = $request->validated();
     if(isset($data["image"])){
-      $relativePath = $this->saveImage($data["image"]) ;
+      $relativePath = $this->saveImage($data["image"]);
+      $data["image"] = $relativePath;
       if($survay->image){
         $absolutePath = public_path($survay->image);
         File::delete($absolutePath);
@@ -82,18 +84,18 @@ class SurvayController extends Controller
     }
     $survay->update($data);
     $existingIDs = $survay->question()->pluck("id")->toArray();
-    $newIDs = Arr::pluck($data["question"],"id");
+    $newIDs = Arr::pluck($data["questions"],"id");
     $toDelete = array_diff($existingIDs,$newIDs);
-    $toAdd =array_diff($newIDs,$existingIDs);
+    $toAdd = array_diff($newIDs,$existingIDs);
     SurvayQuestion::destroy(($toDelete));
-    foreach ($data["question"] as $question) {
+    foreach ($data["questions"] as $question) {
       if(in_array($question["id"],$toAdd)){
         $question["survay_id"] = $survay->id;
         $this->createQuestion($question);
       }
     }
     $questionMap = collect($data["question"])->keyBy("id");
-    foreach ($survay->question as $question) {
+    foreach ($survay->questions as $question) {
       if(isset($questionMap[$question->id])){
         $this->updateQuestion($question,$questionMap[$question->id]);
       }
@@ -139,7 +141,7 @@ class SurvayController extends Controller
       }
       $image = str_replace(" ","+",$image);
       $image= base64_decode($image);
-      if($image ===false){
+      if($image === false){
         throw new \Exception("base64_decode Failed");
       }
     }else{

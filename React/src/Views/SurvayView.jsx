@@ -20,11 +20,12 @@ export default function SurvayView() {
     axiosClint.post("survay",{
       title:"Abood Item 1",
       description: "Test",
-      expire_date:"11/4/2024",
+      expire_date:"11/24/2023",
       status:true
     }).then()
     .catch(err => {
       console.log(err);
+      console.log("Abood");
     })
   };
   const onImageChange = () => {

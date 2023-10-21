@@ -30,7 +30,7 @@ export default function DefaultLayout() {
   };
   return (
     <>
-      <div className="min-h-full">
+      <div className="min-h-screen">
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
             <>

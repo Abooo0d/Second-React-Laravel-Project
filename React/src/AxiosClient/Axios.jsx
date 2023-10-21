@@ -14,8 +14,12 @@ axiosClient.interceptors.response.use(
   ,(error) => {
     const { response } = error;
     if (response.status === 401) {
-      // localStorage.removeItem("ACCESS_TOKEN");
-      console.log("LogOut Form Axios ");
+      console.log("Abood");
+      localStorage.removeItem("TOKEN");
+      console.log(localStorage.getItem('TOKEN'));
+      router.navigate("/login");
+      window.location.reload();
+      console.log("Abood2");
     }
     throw error;
   });

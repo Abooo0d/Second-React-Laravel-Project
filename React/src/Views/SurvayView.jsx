@@ -3,34 +3,49 @@ import Page from "../Components/PageComponent";
 import { HiOutlinePhoto } from "react-icons/hi2";
 import TButton from "../Components/Core/TButton";
 import axiosClint from "../AxiosClient/Axios";
+import axiosClient from "../AxiosClient/Axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SurvayView() {
+  const navigate = useNavigate();
   const [survay, setSurvay] = useState({
     title: "",
     slug: "",
     status: "",
     description: "",
     image: "",
-    Image_url: "",
+    image_url: "",
     expire_date: "",
     questions: [],
   });
   const onSubmit = (ev) => {
     ev.preventDefault();
-    axiosClint.post("survay",{
-      title:"Abood Item 1",
-      description: "Test",
-      expire_date:"11/24/2023",
-      status:true
-    }).then()
-    .catch(err => {
-      console.log(err);
-      console.log("Abood");
+    const payload = {...survay};
+    if(payload.image){
+      payload.image = payload.image_url;
+      delete payload.image_url;
+    }
+    axiosClient.post("/survay",payload)
+    .then(res => {
+      console.log("response", res);
+      navigate("/survay");
     })
   };
-  const onImageChange = () => {
-    console.log("Image Changed");
-  };
+  const onImageChange = (ev) => {
+    const file = ev.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(){
+      if(reader.readyState === 2){
+        setSurvay({
+          ...survay,
+          image:file,
+          image_url:reader.result
+        })
+        ev.target.value = "";
+      }
+    };
+    reader.readAsDataURL(file);
+  }
   return (
     <Page title="SurvayView">
       <form action="#" method="post" onSubmit={onSubmit}>
@@ -45,14 +60,14 @@ export default function SurvayView() {
                 Photo
               </label>
               <div className="mt-2 flex items-center gap-x-3">
-                {survay.Image_url && (
+                {survay.image_url && (
                   <img
-                    src={survay.Image_url}
+                    src={survay.image_url}
                     alt={survay.title}
-                    className="w-32 h-32 object-cover"
+                    className="w-32 h-32 object-cover rounded-md"
                   />
                 )}
-                {!survay.Image_url && (
+                {!survay.image_url && (
                   <span className="flex justify-center items-center text-gray-400 h-12 w-12 overflow-hidden rounded-full bg-gray-100">
                     <HiOutlinePhoto className="w-8 h-8" />
                   </span>
@@ -106,7 +121,7 @@ export default function SurvayView() {
                 name="description"
                 id="description"
                 value={survay.description}
-                placeholder="Survay Title"
+                placeholder="Survay Description"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 onChange={(ev) =>
                   setSurvay({ ...survay, description: ev.target.value })
@@ -141,12 +156,13 @@ export default function SurvayView() {
                 type="checkbox"
                 name="status"
                 id="status"
-                checked={survay.status}
-                value={survay.expire_date}
+                // checked={survay.status}
+                value={survay.status}
                 placeholder="Survay Title"
                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                checked = {survay.status}
                 onChange={(ev) =>
-                  setSurvay({ ...survay, status: ev.target.value })
+                  { setSurvay({...survay,status:ev.target.checked})}
                 }
               />
               </div>

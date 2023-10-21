@@ -16,7 +16,7 @@ class SurvayResource extends JsonResource
   {
     return[
       "id" => $this->id,
-      "name" => $this->name,
+      "title" => $this->title,
       "slug" => $this->slug,
     ];
   }

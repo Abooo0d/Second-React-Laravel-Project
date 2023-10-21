@@ -43,8 +43,10 @@ class SurvayController extends Controller
       $data["image"] = $relativePath;
     }
     $survay = Survay::create($data);
-    foreach ($data["questions"] as $question) {
-      $this->createQuestion($question);
+    if(isset($data["questions"])){
+      foreach ($data["questions"] as $question) {
+        $this->createQuestion($question);
+      }
     }
     return new SurvayResource($survay);
   }

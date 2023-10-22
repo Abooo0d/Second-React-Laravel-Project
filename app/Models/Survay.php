@@ -11,16 +11,16 @@ class Survay extends Model
 {
   use HasFactory;
   use HasSlug;
-  protected $fillable = ["title","description","expire_date","user_id","image","status","created_at","updated_at","questions"];
+  protected $fillable = ["title", "description", "expire_date", "user_id", "image", "status", "created_at", "updated_at", "questions"];
 
 
   /**
    * Get the options for generating the slug.
    */
-  public function getSlugOptions() : SlugOptions
+  public function getSlugOptions(): SlugOptions
   {
-      return SlugOptions::create()
-          ->generateSlugsFrom('title')
-          ->saveSlugsTo('slug');
+    return SlugOptions::create()
+      ->generateSlugsFrom('title')
+      ->saveSlugsTo('slug');
   }
 }

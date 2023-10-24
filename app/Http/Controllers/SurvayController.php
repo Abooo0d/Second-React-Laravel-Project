@@ -10,6 +10,7 @@ use App\Models\SurvayQuestion;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Enums\QuestionTypeEnum;
 
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
@@ -32,21 +33,22 @@ class SurvayController extends Controller
    * Store a newly created resource in storage.
    *
    * @param  \App\Http\Requests\StoreSurvayRequest  $request
-   * @return SurvayResource
    */
   public function store(StoreSurvayRequest $request)
   {
     $data = $request->Validated();
+    // return $data;
     // Check IF Image Was Given And Save On Local File System
     if(isset($data["image"])){
       $relativePath = $this->saveImage($data["image"]);
       $data["image"] = $relativePath;
     }
+    /** @var Survay $survay */
     $survay = Survay::create($data);
-    if(isset($data["questions"])){
-      foreach ($data["questions"] as $question) {
-        $this->createQuestion($question);
-      }
+    // return $data["questions"];
+    foreach ($data["questions"] as $question) {
+      $question['survay_id'] = $survay->id;
+      $this->createQuestion($question);
     }
     return new SurvayResource($survay);
   }
@@ -172,10 +174,10 @@ class SurvayController extends Controller
     }
     $validator = Validator::make($data,[
       "question" => "required|string",
-      "type" => ["required",new Enum(QuestionTypeEnum::class)],
+      "type" => "required",
       "description" => "nullable|string",
-      "data" => "present",
-      "survay_id" => "exists:Survay,id"
+      "data" => "present|nullable",
+      "survay_id" => "nullable|exists:survays,id"
     ]);
     return SurvayQuestion::create($validator->validated());
   }

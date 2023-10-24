@@ -31,11 +31,11 @@ class StoreSurvayRequest extends FormRequest
     return [
       "title" => "required|string|max:1000",
       "image" => "nullable|string",
-      "user_id" => "exists:users,id",
+      "user_id" => "exists:users,id|nullable",
       "status" => "required|boolean",
       "description" => "nullable|string",
       "expire_date" => "nullable|date|after:today",
-      "question" => "nullable|array"
+      "questions" => "nullable|array"
     ];
   }
 }

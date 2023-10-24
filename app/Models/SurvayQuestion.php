@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SurvayQuestion extends Model
 {
-    use HasFactory;
+  use HasFactory;
+  protected $fillable = ["question","type","description","data","survay_id"];
 }

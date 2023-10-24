@@ -5,7 +5,7 @@ import TButton from "../Components/Core/TButton";
 import axiosClint from "../AxiosClient/Axios";
 import axiosClient from "../AxiosClient/Axios";
 import { useNavigate } from "react-router-dom";
-import SurvayQuestions from "../Components/SurvayQuestions"
+import SurvayQuestions from "../Components/SurvayQuestions";
 
 export default function SurvayView() {
   const navigate = useNavigate();
@@ -27,27 +27,28 @@ export default function SurvayView() {
   const onSubmit = (ev) => {
     ev.preventDefault();
     const payload = { ...survay };
+    console.log(survay);
     if (payload.image) {
       payload.image = payload.image_url;
-      delete payload.image_url;
     }
+    delete payload.image_url;
     axiosClient
-      .post("/survay", payload)
+      .post("/survay",payload)
       .then((res) => {
         console.log("response", res);
         navigate("/survay");
       })
       .catch((err) => {
-        console.log(err.response.data.errors);
-        if (err && err.response) {
-          const title = err.response.data.errors.title;
-          const status = err.response.data.errors.status;
-          setErrorMessage({
-            ...errorMessage,
-            title_error: title,
-            status_error: status,
-          });
-        }
+        console.log(err);
+        // if (err && err.response) {
+          // const title = err.response.data.errors.title;
+          // const status = err.response.data.errors.status;
+          // setErrorMessage({
+          //   ...errorMessage,
+          //   title_error: title,
+          //   status_error: status,
+          // });
+        // }
       });
   };
   const onImageChange = (ev) => {
@@ -66,8 +67,8 @@ export default function SurvayView() {
     reader.readAsDataURL(file);
   };
   const onSurvayUpdate = (survay) => {
-    setSurvay({...survay})
-  }
+    setSurvay({ ...survay });
+  };
   return (
     <Page title="SurvayView">
       <form action="#" method="post" onSubmit={onSubmit}>
@@ -194,7 +195,10 @@ export default function SurvayView() {
                 />
               </div>
               <div className="ml-3 text-sm">
-                <label htmlFor="status" className="font-medium text-gray-700 cursor-pointer">
+                <label
+                  htmlFor="status"
+                  className="font-medium text-gray-700 cursor-pointer"
+                >
                   Active
                 </label>
                 <p className="text-gray-500">

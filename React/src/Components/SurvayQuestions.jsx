@@ -3,27 +3,28 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import {v4 as uuidv4} from "uuid";
 import QuestionEditor from "./QuestionEditor";
 
-export default function SurvayQuestion(survay, onSurvayUpdate) {
+export default function SurvayQuestion({survay, onSurvayUpdate}) {
   const [model, setModel] = useState({ ...survay });
 
-  const addQuestion = () => {
+  const addQuestion = (index) => {
+    index = index !== undefined ? index : model.questions.length;
+    model.questions.splice(index,0,{
+      id: uuidv4(),
+      type: "text",
+      question: "",
+      description: "",
+      data: {},
+    })
     setModel({
-      ...survay,
+      ...model,
       questions: [
-        ...model.questions,
-        {
-          id: uuidv4(),
-          type: "text",
-          question: "",
-          description: "",
-          data: {},
-        },
+        ...model.questions
       ],
     });
   };
   const questionChange = (question) => {
     if (!question) return;
-    const newQuestion = model.question.map((q) => {
+    const newQuestion = model.questions.map((q) => {
       if (q.id == question.id) return { ...question };
       return q;
     });setModel({
@@ -44,16 +45,17 @@ export default function SurvayQuestion(survay, onSurvayUpdate) {
   return (
     <>
       <div className="flex justify-between">
+        <h3 className="text-2x1 font-bold">Questions</h3>
         <button
           className="flex items-center text-sm py-1 px-4 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
           type="button"
-          onClick={addQuestion}
+          onClick={() => addQuestion(0)}
         >
           <AiOutlinePlusCircle />
           Add Question
         </button>
       </div>
-      {model.questions ? (
+      {model.questions.length ? (
         model.questions.map((q, ind) => (
           <QuestionEditor
             key={q.id}

@@ -5,7 +5,7 @@ import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../Contexts/ContextProvider";
 import { CiUser } from "react-icons/ci";
 import axiosClient from "../AxiosClient/Axios";
-
+import { useEffect } from "react";
 const navigation = [
   { name: "Dashboard", to: "/" },
   { name: "Survays", to: "/survay" },
@@ -28,6 +28,12 @@ export default function DefaultLayout() {
       setUserToken(null);
     });
   };
+  useEffect(() => {
+    axiosClient.get("me")
+    .then(({data}) => {
+      setCurrentUser(data);
+    })
+  },[]);
   return (
     <>
       <div className="min-h-screen">
@@ -150,10 +156,10 @@ export default function DefaultLayout() {
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">
-                        {currentUser.name}
+                        {currentUser.name ?? currentUser.name }
                       </div>
                       <div className="text-sm font-medium leading-none text-gray-400">
-                        {currentUser.email}
+                        {currentUser.email ?? currentUser.email}
                       </div>
                     </div>
                   </div>

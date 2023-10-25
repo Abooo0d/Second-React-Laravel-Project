@@ -33,22 +33,21 @@ export default function SurvayView() {
     }
     delete payload.image_url;
     axiosClient
-      .post("/survay",payload)
+      .post("/survay", payload)
       .then((res) => {
         console.log("response", res);
         navigate("/survay");
       })
       .catch((err) => {
-        console.log(err);
-        // if (err && err.response) {
-          // const title = err.response.data.errors.title;
-          // const status = err.response.data.errors.status;
-          // setErrorMessage({
-          //   ...errorMessage,
-          //   title_error: title,
-          //   status_error: status,
-          // });
-        // }
+        if (err && err.response) {
+          const title = err.response.data.errors.title;
+          const status = err.response.data.errors.status;
+          setErrorMessage({
+            ...errorMessage,
+            title_error: title,
+            status_error: status,
+          });
+        }
       });
   };
   const onImageChange = (ev) => {
@@ -66,11 +65,12 @@ export default function SurvayView() {
     };
     reader.readAsDataURL(file);
   };
-  const onSurvayUpdate = (survay) => {
-    setSurvay({ ...survay });
+  const onQuestionsUpdate = (questions) => {
+    setSurvay({ ...survay, questions });
   };
   return (
     <Page title="SurvayView">
+      {/* <pre>{JSON.stringify(survay, undefined, 2)}</pre> */}
       <form action="#" method="post" onSubmit={onSubmit}>
         <div className="shadow sm:overflow-hidden sm:rounded-md">
           <div className="space-y-6 bg-white py-5 px-4 sm:p6">
@@ -212,7 +212,10 @@ export default function SurvayView() {
               )}
             </div>
             {/* Active */}
-            <SurvayQuestions survay={survay} onSurvayUpdate={onSurvayUpdate} />
+            <SurvayQuestions
+              questions={survay.questions}
+              onQuestionsUpdate={onQuestionsUpdate}
+            />
           </div>
           <div className="bg-gray-50 px-4 py-4 text-right sm-px-6">
             <TButton>Save</TButton>

@@ -185,12 +185,7 @@ const tmpSurvays = [
   },
 ];
 export const ContextProvider = ({ children }) => {
-  const [currentUser, _setCurrentUser] = useState(
-    {
-      name: localStorage.getItem("USERNAME"),
-      email: localStorage.getItem("USEREMAIL"),
-    } || {}
-  );
+  const [currentUser, setCurrentUser] = useState({});
   const [userToken, _setUserToken] = useState(
     localStorage.getItem("TOKEN") || ""
   );
@@ -204,16 +199,16 @@ export const ContextProvider = ({ children }) => {
     }
     _setUserToken(token);
   };
-  const setCurrentUser = (user) => {
-    if (user) {
-      localStorage.setItem("USERNAME", user.name);
-      localStorage.setItem("USEREMAIL", user.email);
-    } else {
-      localStorage.removeItem("USERNAME");
-      localStorage.removeItem("USEREMAIL");
-    }
-    _setCurrentUser(user);
-  };
+  // const setCurrentUser = (user) => {
+  //   if (user) {
+  //     localStorage.setItem("USERNAME", user.name);
+  //     localStorage.setItem("USEREMAIL", user.email);
+  //   } else {
+  //     localStorage.removeItem("USERNAME");
+  //     localStorage.removeItem("USEREMAIL");
+  //   }
+  //   _setCurrentUser(user);
+  // };
   return (
     <StateContext.Provider
       value={{

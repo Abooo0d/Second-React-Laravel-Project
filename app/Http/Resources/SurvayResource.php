@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class SurvayResource extends JsonResource
 {
@@ -17,7 +18,14 @@ class SurvayResource extends JsonResource
     return[
       "id" => $this->id,
       "title" => $this->title,
-      "slug" => $this->slug
+      "slug" => $this->slug,
+      "image_url" => $this->image ? URL::to($this->image) : null,
+      "status" => !!$this->status,
+      "description" => $this->description,
+      "created_at" => (string)$this->created_at->format("Y-m-d H:i:s"),
+      "updated_at" => (string)$this->updated_at->format("Y-m-d H:i:s"),
+      // "expire_date" => (string)$this->expire_date->format("Y-m-d"),
+      "questions" => SurvayQuestionsResource::collection($this->whenLoaded('questions')),
     ];
   }
 }

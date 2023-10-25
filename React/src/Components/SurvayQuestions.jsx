@@ -3,45 +3,38 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import {v4 as uuidv4} from "uuid";
 import QuestionEditor from "./QuestionEditor";
 
-export default function SurvayQuestion({survay, onSurvayUpdate}) {
-  const [model, setModel] = useState({ ...survay });
+export default function SurvayQuestion({questions, onQuestionsUpdate}) {
+  const [myQuestions, setMyQuestions] = useState([...questions]);
 
   const addQuestion = (index) => {
-    index = index !== undefined ? index : model.questions.length;
-    model.questions.splice(index,0,{
+    index = index !== undefined ? index : myQuestions.length;
+    myQuestions.splice(index,0,{
       id: uuidv4(),
       type: "text",
       question: "",
       description: "",
       data: {},
     })
-    setModel({
-      ...model,
-      questions: [
-        ...model.questions
-      ],
-    });
+    setMyQuestions([...myQuestions]);
+    onQuestionsUpdate(myQuestions);
   };
   const questionChange = (question) => {
     if (!question) return;
-    const newQuestion = model.questions.map((q) => {
+    const newQuestions = myQuestions.map((q) => {
       if (q.id == question.id) return { ...question };
       return q;
-    });setModel({
-      ...model,
-      questions:newQuestion
-    })
+    });
+    setMyQuestions(newQuestions);
+    onQuestionsUpdate(newQuestions);
   };
   const deleteQuestion = (question) => {
-    const newQuestions = model.questions.filter((q) => q.id !== question.id);
-    setModel({
-      ...model,
-      questions:newQuestions
-    });
+    const newQuestions = myQuestions.filter((q) => q.id !== question.id);
+    setMyQuestions(newQuestions);
+    onQuestionsUpdate(newQuestions);
   };
   useEffect(() => {
-    onSurvayUpdate(model);
-  },[model]);
+    setMyQuestions(questions);
+  },[questions]);
   return (
     <>
       <div className="flex justify-between">
@@ -55,8 +48,8 @@ export default function SurvayQuestion({survay, onSurvayUpdate}) {
           Add Question
         </button>
       </div>
-      {model.questions.length ? (
-        model.questions.map((q, ind) => (
+      {myQuestions.length ? (
+        myQuestions.map((q, ind) => (
           <QuestionEditor
             key={q.id}
             index={ind}

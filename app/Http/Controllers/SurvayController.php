@@ -9,24 +9,24 @@ use App\Http\Requests\UpdateSurvayRequest;
 use App\Models\SurvayQuestion;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\QuestionTypeEnum;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
-use Request;
 
 class SurvayController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return SurvayResource::collection
+  //  * @return SurvayResource::collection
    */
   public function index(Request $request)
   {
     $user = $request->user();
-    return SurvayResource::collection(Survay::where("user_id", $user->id)->orderBy("created_at", "desc")->paginate(10));
+    return SurvayResource::collection(Survay::where("user_id", $user->id)->orderBy("created_at", "desc")->paginate(2));
   }
 
   /**
@@ -37,7 +37,6 @@ class SurvayController extends Controller
   public function store(StoreSurvayRequest $request)
   {
     $data = $request->Validated();
-    // return $data;
     // Check IF Image Was Given And Save On Local File System
     if (isset($data["image"])) {
       $relativePath = $this->saveImage($data["image"]);
@@ -45,6 +44,7 @@ class SurvayController extends Controller
     }
     /** @var Survay $survay */
     $survay = Survay::create($data);
+    return response(["data" => $survay]);
     // return $data["questions"];
     foreach ($data["questions"] as $question) {
       $question['survay_id'] = $survay->id;

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useStateContext } from "../Contexts/ContextProvider";
 import axiosClient from "../AxiosClient/Axios";
 
 export default function Login() {
-  const {setCurrentUser,setUserToken,currentUser} = useStateContext();
+  const {setCurrentUser,setUserToken} = useStateContext();
   const [error, setError] = useState({ __html: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +19,7 @@ export default function Login() {
       .then(({ data }) => {
         setCurrentUser(data.user);
         setUserToken(data.token);
+        Navigate("/");
       })
       .catch((error) => {
         const finaleError = error.response.data.error;

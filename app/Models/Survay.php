@@ -11,7 +11,7 @@ class Survay extends Model
 {
   use HasFactory;
   use HasSlug;
-  protected $fillable = ["title","user_id","description","status"];
+  protected $fillable = ['title', 'description', 'expire_date', 'image', 'user_id', 'status', 'created_at', 'updated_at'];
   /**
    * Get the options for generating the slug.
    */

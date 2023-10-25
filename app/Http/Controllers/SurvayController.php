@@ -10,9 +10,9 @@ use App\Models\SurvayQuestion;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Enums\QuestionTypeEnum;
-
+use App\Enums\QuestionTypeEnum;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Request;
 
@@ -26,7 +26,7 @@ class SurvayController extends Controller
   public function index(Request $request)
   {
     $user = $request->user();
-    return SurvayResource::collection(Survay::where("user_id",$user->id)->orderBy("created_at","desc")->paginate(10));
+    return SurvayResource::collection(Survay::where("user_id", $user->id)->orderBy("created_at", "desc")->paginate(10));
   }
 
   /**
@@ -39,7 +39,7 @@ class SurvayController extends Controller
     $data = $request->Validated();
     // return $data;
     // Check IF Image Was Given And Save On Local File System
-    if(isset($data["image"])){
+    if (isset($data["image"])) {
       $relativePath = $this->saveImage($data["image"]);
       $data["image"] = $relativePath;
     }
@@ -59,11 +59,11 @@ class SurvayController extends Controller
    * @param  \App\Models\Survay  $survay
    * @return SurvayResource
    */
-  public function show(Survay $survay ,Request $request)
+  public function show(Survay $survay, Request $request)
   {
     $user = $request->validated();
-    if($user->id !== $survay->user_id){
-      return abort(403,"Unauthorized Action");
+    if ($user->id !== $survay->user_id) {
+      return abort(403, "Unauthorized Action");
     }
     return new SurvayResource($survay);
   }
@@ -78,30 +78,30 @@ class SurvayController extends Controller
   public function update(UpdateSurvayRequest $request, Survay $survay)
   {
     $data = $request->validated();
-    if(isset($data["image"])){
+    if (isset($data["image"])) {
       $relativePath = $this->saveImage($data["image"]);
       $data["image"] = $relativePath;
-      if($survay->image){
+      if ($survay->image) {
         $absolutePath = public_path($survay->image);
         File::delete($absolutePath);
       }
     }
     $survay->update($data);
     $existingIDs = $survay->question()->pluck("id")->toArray();
-    $newIDs = Arr::pluck($data["questions"],"id");
-    $toDelete = array_diff($existingIDs,$newIDs);
-    $toAdd = array_diff($newIDs,$existingIDs);
+    $newIDs = Arr::pluck($data["questions"], "id");
+    $toDelete = array_diff($existingIDs, $newIDs);
+    $toAdd = array_diff($newIDs, $existingIDs);
     SurvayQuestion::destroy(($toDelete));
     foreach ($data["questions"] as $question) {
-      if(in_array($question["id"],$toAdd)){
+      if (in_array($question["id"], $toAdd)) {
         $question["survay_id"] = $survay->id;
         $this->createQuestion($question);
       }
     }
     $questionMap = collect($data["question"])->keyBy("id");
     foreach ($survay->questions as $question) {
-      if(isset($questionMap[$question->id])){
-        $this->updateQuestion($question,$questionMap[$question->id]);
+      if (isset($questionMap[$question->id])) {
+        $this->updateQuestion($question, $questionMap[$question->id]);
       }
     }
     return new SurvayResource($survay);
@@ -113,18 +113,18 @@ class SurvayController extends Controller
    * @param  \App\Models\Survay  $survay
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Survay $survay,Request $request)
+  public function destroy(Survay $survay, Request $request)
   {
     $user = $request->validated();
-    if($user->id !== $survay->user_id){
-      return abort(403,"Unauthorized Action");
+    if ($user->id !== $survay->user_id) {
+      return abort(403, "Unauthorized Action");
     }
     $survay->delete();
-    if($survay->image){
+    if ($survay->image) {
       $absolutePath = public_path($survay->image);
       File::delete($absolutePath);
     }
-    return response("",204);
+    return response("", 204);
   }
   /**
    * Save Image In Local File System And Return Saved Image Path
@@ -132,33 +132,34 @@ class SurvayController extends Controller
    * @throws \Exception
    * @author Abood <abdsadalden2001@gmail.com>
    */
-  private function saveImage($image){
+  private function saveImage($image)
+  {
     // Check If Image Is Valid base64 string
-    if(preg_match("/^data:image\/(\w+);base64,/",$image,$type)){
+    if (preg_match("/^data:image\/(\w+);base64,/", $image, $type)) {
       // Take Out The Base64 encoded Text WithOut Mime type
-      $image = substr($image,strpos($image,",") + 1);
+      $image = substr($image, strpos($image, ",") + 1);
       // Get The File type
       $type = strtolower($type[1]);
       // Check If The Type Is In The Allowed Type Array
-      if(!in_array($type,["jpeg","jpg","gif","png"])){
+      if (!in_array($type, ["jpeg", "jpg", "gif", "png"])) {
         throw new \Exception("Invalid Image Type");
       }
-      $image = str_replace(" ","+",$image);
-      $image= base64_decode($image);
-      if($image === false){
+      $image = str_replace(" ", "+", $image);
+      $image = base64_decode($image);
+      if ($image === false) {
         throw new \Exception("base64_decode Failed");
       }
-    }else{
+    } else {
       throw new \Exception("Did Not Match Data URI With Image Data");
     }
     $dir = "images/";
     $file = Str::random() . "." . $type;
     $absolutePath = public_path($dir);
     $relativePath = $dir . $file;
-    if(!File::exists(($absolutePath))){
-      File::makeDirectory($absolutePath,0755,true);
+    if (!File::exists(($absolutePath))) {
+      File::makeDirectory($absolutePath, 0755, true);
     }
-    file_put_contents($relativePath,$image);
+    file_put_contents($relativePath, $image);
     return $relativePath;
   }
   /**
@@ -168,15 +169,16 @@ class SurvayController extends Controller
    * @throws \Illuminate\Validation\ValidationException
    * @author Abood <abdsadalden2001@gmail.com>
    */
-  private function createQuestion($data){
-    if(is_array($data['data'])){
+  private function createQuestion($data)
+  {
+    if (is_array($data['data'])) {
       $data['data'] = json_encode($data['data']);
     }
-    $validator = Validator::make($data,[
+    $validator = Validator::make($data, [
       "question" => "required|string",
-      "type" => "required",
+      "type" => ["required", new Enum(QuestionTypeEnum::class)],
       "description" => "nullable|string",
-      "data" => "present|nullable",
+      "data" => "present",
       "survay_id" => "nullable|exists:survays,id"
     ]);
     return SurvayQuestion::create($validator->validated());
@@ -189,14 +191,15 @@ class SurvayController extends Controller
    * @throws \Illuminate\Validation\ValidationException
    * @author Abood <abdsadalden2001@gmail.com>
    */
-  private function updateQuestion(SurvayQuestion $question,$data){
-    if(is_array($data["data"])){
+  private function updateQuestion(SurvayQuestion $question, $data)
+  {
+    if (is_array($data["data"])) {
       $data["data"] = json_encode($data["data"]);
     }
-    $validator = Validator::make($data,[
+    $validator = Validator::make($data, [
       "id" => "exists:SurvayQuestion,id",
       "question" => "required|string",
-      "type" => ["required",new Enum(QuestionTypeEnum::class)],
+      "type" => ["required", new Enum(QuestionTypeEnum::class)],
       "description" => "nullable|string",
       "data" => "present"
     ]);

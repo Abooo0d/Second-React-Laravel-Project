@@ -161,7 +161,7 @@ export default function DefaultLayout() {
                     <Disclosure.Button
                       as="a"
                       href="#"
-                      onClick={(ev) => Logout(ev)}
+                      onClick={(ev) => logout(ev)}
                       className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                     >
                       Sign Out

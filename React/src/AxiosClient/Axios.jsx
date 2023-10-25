@@ -9,7 +9,6 @@ const axiosClient = axios.create({
   }
 });
 axiosClient.interceptors.request.use((config) => {
-  // config.setHeader("Access-Control-Allow-Origin", "*");
   config.headers.Authorization = `Bearer ${localStorage.getItem("TOKEN")}`;
   config.headers  = {...config.headers, "Access-Control-Allow-Origin": "*"};
   return config;
@@ -21,12 +20,12 @@ axiosClient.interceptors.response.use((response) => {
   (error) => {
     const { response } = error;
     console.log(error);
-    // if (response.status === 401) {
-    //   localStorage.removeItem("TOKEN");
-    //   console.log(localStorage.getItem("TOKEN"));
-    //   router.navigate("/login");
-    //   window.location.reload();
-    // }
+    if (response.status === 401) {
+      localStorage.removeItem("TOKEN");
+      console.log(localStorage.getItem("TOKEN"));
+      router.navigate("/login");
+      window.location.reload();
+    }
     throw error;
   }
 );

@@ -16,9 +16,10 @@ class SurvayQuestionsResource extends JsonResource
   {
     return [
       "id" => $this->id,
-      'survey_id' => $this->survey_id,
+      'survey_id' => $this->survay_id,
       'question' => $this->question,
       'type' => $this->type,
+      "description" => $this->description,
       'options' => json_decode($this->options),
       'is_required' => (boolean)$this->is_required,
       "data" => json_decode($this->data),

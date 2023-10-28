@@ -10,7 +10,7 @@ export default function SurvaysListItem({survay ,onDeleteClick,img}) {
       <div dangerouslySetInnerHTML={{__html:survay.description}} className="overflow-hidden flex-1">
       </div>
       <div className="flex justify-between items-center mt-3">
-        <TButton to={`survay/${survay.id}`}>
+        <TButton to={`/survay/${survay.id}`}>
           <BsPencil className="w-5 h-5 mr-2"/>
           Edit
         </TButton>

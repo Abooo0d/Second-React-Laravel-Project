@@ -80,7 +80,8 @@ export default function QuestionEditor({
             {questionTypes.map((type, index) => (
               <option
                 value={type}
-                defaultValue={model.type == type}
+                // defaultValue={model.type === type ? true : false}
+                selected={ model.type === type ? true : false}
                 key={index}
               >
                 {upperCaseFirst(type)}

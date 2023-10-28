@@ -21,4 +21,8 @@ class Survay extends Model
       ->generateSlugsFrom('title')
       ->saveSlugsTo('slug');
   }
+  public function questions()
+  {
+    return $this->hasMany(SurvayQuestion::class);
+  }
 }

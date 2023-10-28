@@ -9,6 +9,8 @@ import TButton from "../Components/Core/TButton";
 import { useEffect, useState } from "react";
 import axiosClient from "../AxiosClient/Axios";
 import PaginationLinks from "../Components/PaginationLinks";
+import Spinner from "../Components/Core/Spinner";
+// import { Spinner } from "@material-tailwind/react";
 let images = [image1, image2, image3];
 export default function Survay() {
   // const { survays } = useStateContext();
@@ -18,7 +20,7 @@ export default function Survay() {
   const onDeleteClick = () => {
     console.log("OnDelete");
   };
-  function onPageClick(link){
+  function onPageClick(link) {
     getSurvays(link.url);
   }
   const getSurvays = (url) => {
@@ -29,12 +31,12 @@ export default function Survay() {
       .then(({ data }) => {
         setSurvays(data.data);
         setMeta(data.meta);
-        setLoading(false)
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
   useEffect(() => {
     getSurvays();
   }, []);
@@ -48,7 +50,7 @@ export default function Survay() {
         </TButton>
       }
     >
-      {loading && <div className="text-center text-lg">Loading...</div>}
+      {loading && <Spinner />}
       {!loading && (
         <div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
@@ -61,7 +63,7 @@ export default function Survay() {
               />
             ))}
           </div>
-          <PaginationLinks meta={meta} onPageClick={onPageClick}/>
+          <PaginationLinks meta={meta} onPageClick={onPageClick} />
         </div>
       )}
     </PageComponent>

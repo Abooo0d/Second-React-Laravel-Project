@@ -44,8 +44,6 @@ class SurvayController extends Controller
     }
     /** @var Survay $survay */
     $survay = Survay::create($data);
-    return response(["data" => $survay]);
-    // return $data["questions"];
     foreach ($data["questions"] as $question) {
       $question['survay_id'] = $survay->id;
       $this->createQuestion($question);
@@ -61,7 +59,7 @@ class SurvayController extends Controller
    */
   public function show(Survay $survay, Request $request)
   {
-    $user = $request->validated();
+    $user = $request->user();
     if ($user->id !== $survay->user_id) {
       return abort(403, "Unauthorized Action");
     }

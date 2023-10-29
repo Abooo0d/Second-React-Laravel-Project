@@ -34,7 +34,7 @@ class UpdateSurvayRequest extends FormRequest
       "status" => "required|boolean",
       "description" => "nullable|string",
       "expire_date" => "nullable|date|after:today",
-      "question" => "array"
+      "questions" => "array"
     ];
   }
 }

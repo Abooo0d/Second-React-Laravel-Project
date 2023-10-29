@@ -19,10 +19,8 @@ axiosClient.interceptors.response.use((response) => {
   },
   (error) => {
     const { response } = error;
-    console.log(error);
     if (response.status === 401) {
       localStorage.removeItem("TOKEN");
-      console.log(localStorage.getItem("TOKEN"));
       router.navigate("/login");
       window.location.reload();
     }

@@ -34,7 +34,7 @@ export default function PaginationLinks({ meta , onPageClick}) {
     }
   }
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 shadow-md mt-4 ">
+    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 shadow-md mt-4">
       <div className="flex flex-1 justify-between sm:hidden">
         <a
           onClick={(ev) => onClick(ev,meta.links[0])}
@@ -58,7 +58,7 @@ export default function PaginationLinks({ meta , onPageClick}) {
           </p>
         </div>
         <div>
-          <nav
+          {meta.total > meta.per_page &&  <nav
             className="isolate inline-flex -space-x-px rounded-md shadow-sm"
             aria-label="Pagination"
           >
@@ -67,6 +67,7 @@ export default function PaginationLinks({ meta , onPageClick}) {
                 <a
                   onClick={(ev) => onClick(ev ,link)}
                   href="#"
+                  key={index}
                   aria-current="page"
                   className={
                     `relative z-10 inline-flex items-center px-4 py-2 text-sm font-semibold transition-all focus:z-20 focus-visible:outline
@@ -82,7 +83,8 @@ export default function PaginationLinks({ meta , onPageClick}) {
                 >
                 </a>
               ))}
-          </nav>
+          </nav>}
+
         </div>
       </div>
     </div>

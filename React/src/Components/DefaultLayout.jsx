@@ -6,6 +6,7 @@ import { useStateContext } from "../Contexts/ContextProvider";
 import { CiUser } from "react-icons/ci";
 import axiosClient from "../AxiosClient/Axios";
 import { useEffect } from "react";
+import Toast from "./Core/Toast";
 const navigation = [
   { name: "Dashboard", to: "/" },
   { name: "Survays", to: "/survay" },
@@ -179,6 +180,7 @@ export default function DefaultLayout() {
           )}
         </Disclosure>
         <Outlet />
+        <Toast/>
       </div>
     </>
   );

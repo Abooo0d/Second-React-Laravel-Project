@@ -26,7 +26,7 @@ class SurvayController extends Controller
   public function index(Request $request)
   {
     $user = $request->user();
-    return SurvayResource::collection(Survay::where("user_id", $user->id)->orderBy("created_at", "desc")->paginate(2));
+    return SurvayResource::collection(Survay::where("user_id", $user->id)->orderBy("created_at", "desc")->paginate(6));
   }
 
   /**
@@ -85,7 +85,8 @@ class SurvayController extends Controller
       }
     }
     $survay->update($data);
-    $existingIDs = $survay->question()->pluck("id")->toArray();
+
+    $existingIDs = $survay->questions()->pluck("id")->toArray();
     $newIDs = Arr::pluck($data["questions"], "id");
     $toDelete = array_diff($existingIDs, $newIDs);
     $toAdd = array_diff($newIDs, $existingIDs);
@@ -96,7 +97,7 @@ class SurvayController extends Controller
         $this->createQuestion($question);
       }
     }
-    $questionMap = collect($data["question"])->keyBy("id");
+    $questionMap = collect($data["questions"])->keyBy("id");
     foreach ($survay->questions as $question) {
       if (isset($questionMap[$question->id])) {
         $this->updateQuestion($question, $questionMap[$question->id]);
@@ -113,7 +114,7 @@ class SurvayController extends Controller
    */
   public function destroy(Survay $survay, Request $request)
   {
-    $user = $request->validated();
+    $user = $request->user();
     if ($user->id !== $survay->user_id) {
       return abort(403, "Unauthorized Action");
     }
@@ -195,7 +196,7 @@ class SurvayController extends Controller
       $data["data"] = json_encode($data["data"]);
     }
     $validator = Validator::make($data, [
-      "id" => "exists:SurvayQuestion,id",
+      "id" => "exists:survay_questions,id",
       "question" => "required|string",
       "type" => ["required", new Enum(QuestionTypeEnum::class)],
       "description" => "nullable|string",

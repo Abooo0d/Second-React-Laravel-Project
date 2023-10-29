@@ -17,8 +17,16 @@ export default function Survay() {
   const [survays, setSurvays] = useState([]);
   const [loading, setLoading] = useState(false);
   const [meta, setMeta] = useState({});
-  const onDeleteClick = () => {
-    console.log("OnDelete");
+  const {showToast} = useStateContext();
+
+  const onDeleteClick = (id) => {
+    if(window.confirm("Are You Sure To Delete This Survay!!")){
+    axiosClient.delete(`/survay/${id}`)
+    .then(() => {
+      getSurvays();
+      showToast("The Survay Was Deleted Successfully");
+    });
+    }
   };
   function onPageClick(link) {
     getSurvays(link.url);
@@ -53,6 +61,11 @@ export default function Survay() {
       {loading && <Spinner />}
       {!loading && (
         <div>
+          {survays.length === 0 &&
+            <div className="py-8 text-center text-gray-700">
+              You hae No Survays Created
+            </div>
+          }
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
             {survays.map((survay, index) => (
               <SurvaysListItem
@@ -63,7 +76,7 @@ export default function Survay() {
               />
             ))}
           </div>
-          <PaginationLinks meta={meta} onPageClick={onPageClick} />
+          {survays.length > 0 && <PaginationLinks meta={meta} onPageClick={onPageClick} />}
         </div>
       )}
     </PageComponent>

@@ -7,8 +7,10 @@ import axiosClient from "../AxiosClient/Axios";
 import { useNavigate, useParams } from "react-router-dom";
 import SurvayQuestions from "../Components/SurvayQuestions";
 import Spinner from "../Components/Core/Spinner";
+import { useStateContext } from "../Contexts/ContextProvider";
 
 export default function SurvayView() {
+  const {showToast} = useStateContext();
   const navigate = useNavigate();
   const { id } = useParams();
   const [errorMessage, setErrorMessage] = useState({
@@ -28,20 +30,31 @@ export default function SurvayView() {
   });
   const [loading, setLoading] = useState(false);
   const onSubmit = (ev) => {
+    setLoading(true);
     ev.preventDefault();
     const payload = { ...survay };
-    console.log(survay);
     if (payload.image) {
       payload.image = payload.image_url;
     }
     delete payload.image_url;
-    axiosClient
-      .post("/survay", payload)
+    let res = null;
+    if (id) {
+      res = axiosClient.put(`/survay/${id}`, payload);
+    } else {
+      res = axiosClient.post("/survay", payload);
+    }
+    res
       .then((res) => {
-        console.log("response", res);
+        setLoading(false);
         navigate("/survay");
+        if(id){
+          showToast("The Survay Was Updated Successfully");
+        }else{
+          showToast("The Survay Was Created Successfully");
+        }
       })
       .catch((err) => {
+        setLoading(false);
         if (err && err.response) {
           const title = err.response.data.errors.title;
           const status = err.response.data.errors.status;
@@ -167,7 +180,7 @@ export default function SurvayView() {
                 <textarea
                   name="description"
                   id="description"
-                  value={survay.description}
+                  value={survay.description || ""}
                   placeholder="Survay Description"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(ev) =>

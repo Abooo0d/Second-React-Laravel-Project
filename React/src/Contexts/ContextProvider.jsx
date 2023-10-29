@@ -5,6 +5,10 @@ const StateContext = createContext({
   userToken: null,
   survays: [],
   questionTypes: [],
+  toast:{
+    message:"",
+    show:false
+  },
   setCurrentUser: () => {},
   setUserToken: () => {},
 });
@@ -189,6 +193,7 @@ export const ContextProvider = ({ children }) => {
   const [userToken, _setUserToken] = useState(
     localStorage.getItem("TOKEN") || ""
   );
+  const [toast,setToast] = useState({message:"",show:false});
   const [survays, setSurvays] = useState(tmpSurvays);
   const [questionTypes] = useState(["text", "select", "radio", "checkbox"]);
   const setUserToken = (token) => {
@@ -199,6 +204,12 @@ export const ContextProvider = ({ children }) => {
     }
     _setUserToken(token);
   };
+  const showToast = (message) => {
+    setToast({message,show:true});
+    setTimeout(() => {
+      setToast({message:"",show:false});
+    }, 5000);
+  }
   // const setCurrentUser = (user) => {
   //   if (user) {
   //     localStorage.setItem("USERNAME", user.name);
@@ -218,6 +229,8 @@ export const ContextProvider = ({ children }) => {
         setUserToken,
         survays,
         questionTypes,
+        toast,
+        showToast
       }}
     >
       {children}

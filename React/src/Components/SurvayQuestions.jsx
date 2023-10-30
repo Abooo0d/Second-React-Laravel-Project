@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import QuestionEditor from "./QuestionEditor";
 
-export default function SurvayQuestion({questions, onQuestionsUpdate}) {
+export default function SurvayQuestion({ questions, onQuestionsUpdate }) {
   const [myQuestions, setMyQuestions] = useState([...questions]);
 
   const addQuestion = (index) => {
     index = index !== undefined ? index : myQuestions.length;
-    myQuestions.splice(index,0,{
+    myQuestions.splice(index, 0, {
       id: uuidv4(),
       type: "text",
       question: "",
       description: "",
       data: {},
-    })
+    });
     setMyQuestions([...myQuestions]);
     onQuestionsUpdate(myQuestions);
   };
@@ -34,7 +34,7 @@ export default function SurvayQuestion({questions, onQuestionsUpdate}) {
   };
   useEffect(() => {
     setMyQuestions(questions);
-  },[questions]);
+  }, [questions]);
   return (
     <>
       <div className="flex justify-between">
@@ -50,14 +50,17 @@ export default function SurvayQuestion({questions, onQuestionsUpdate}) {
       </div>
       {myQuestions.length ? (
         myQuestions.map((q, ind) => (
-          <QuestionEditor
-            key={q.id}
-            index={ind}
-            question={q}
-            questionChange={questionChange}
-            addQuestion={addQuestion}
-            deleteQuestion={deleteQuestion}
-          />
+          <>
+            <QuestionEditor
+              key={q.id}
+              index={ind}
+              question={q}
+              questionChange={questionChange}
+              addQuestion={addQuestion}
+              deleteQuestion={deleteQuestion}
+            />
+            <hr className="border-gray-300"/>
+          </>
         ))
       ) : (
         <div className="text-gray-400 text-center py-4">

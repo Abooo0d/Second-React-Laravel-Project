@@ -9,7 +9,7 @@ export default {
       keyframes:{
         "fade-in-down":{
           "from": {
-            transform:"translateY(-1rem)",
+            transform:"translateY(1rem)",
             opacity:"0"
           },
           "to":{

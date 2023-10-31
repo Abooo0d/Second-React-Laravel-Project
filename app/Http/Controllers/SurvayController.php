@@ -204,5 +204,17 @@ class SurvayController extends Controller
     ]);
     return $question->update(($validator->validated()));
   }
+  public function getBySlug(Survay $survay)
+  {
+    if(!$survay->status){
+      return response("Not Active",404);
+    }
+    $currenDate = new \DateTime();
+    $expireDate = new \DateTime($survay->expire_date);
+    if($currenDate > $expireDate){
+      return response("Expired Date" , 404);
+    }
+    return new SurvayResource($survay);
+  }
 }
 

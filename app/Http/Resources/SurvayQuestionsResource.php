@@ -20,7 +20,6 @@ class SurvayQuestionsResource extends JsonResource
       'question' => $this->question,
       'type' => $this->type,
       "description" => $this->description,
-      'options' => json_decode($this->options),
       'is_required' => (boolean)$this->is_required,
       "data" => json_decode($this->data),
       'created_at' => date('Y-m-d H:i', strtotime($this->created_at)),

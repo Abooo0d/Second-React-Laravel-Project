@@ -8,9 +8,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import SurvayQuestions from "../Components/SurvayQuestions";
 import Spinner from "../Components/Core/Spinner";
 import { useStateContext } from "../Contexts/ContextProvider";
+import { TrashIcon } from "@heroicons/react/20/solid";
+import { BsLink45Deg } from "react-icons/bs";
 
 export default function SurvayView() {
-  const {showToast} = useStateContext();
+  const { showToast } = useStateContext();
   const navigate = useNavigate();
   const { id } = useParams();
   const [errorMessage, setErrorMessage] = useState({
@@ -47,9 +49,9 @@ export default function SurvayView() {
       .then((res) => {
         setLoading(false);
         navigate("/survay");
-        if(id){
+        if (id) {
           showToast("The Survay Was Updated Successfully");
-        }else{
+        } else {
           showToast("The Survay Was Created Successfully");
         }
       })
@@ -84,6 +86,9 @@ export default function SurvayView() {
   const onQuestionsUpdate = (questions) => {
     setSurvay({ ...survay, questions });
   };
+  const onDelete = () => {
+
+  }
   useEffect(() => {
     if (id) {
       setLoading(true);
@@ -100,7 +105,21 @@ export default function SurvayView() {
     }
   }, []);
   return (
-    <Page title={!id ? "Create New Survay" : "Update Survay"}>
+    <Page
+      title={!id ? "Create New Survay" : "Update Survay"}
+      buttons={
+        <div className="flex gap-x-3">
+          <TButton color="green" href={`/survay/public/${survay.slug}`}>
+            <BsLink45Deg className="h-5 w-5 mr-2" />
+            Public Link
+          </TButton>
+          <TButton color="red" onClick={onDelete}>
+            <TrashIcon className="h-4 w-4 mr-2" />
+            Delete
+          </TButton>
+        </div>
+      }
+    >
       {loading && <Spinner />}
       {!loading && (
         <form action="#" method="post" onSubmit={onSubmit}>

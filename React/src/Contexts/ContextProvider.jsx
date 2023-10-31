@@ -195,7 +195,7 @@ export const ContextProvider = ({ children }) => {
   );
   const [toast,setToast] = useState({message:"",show:false});
   const [survays, setSurvays] = useState(tmpSurvays);
-  const [questionTypes] = useState(["text", "select", "radio", "checkbox"]);
+  const [questionTypes] = useState(["text", "select", "radio", "checkbox","textarea"]);
   const setUserToken = (token) => {
     if (token) {
       localStorage.setItem("TOKEN", token);

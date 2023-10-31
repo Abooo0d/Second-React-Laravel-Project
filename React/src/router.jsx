@@ -6,6 +6,7 @@ import Survay from "./Views/Survay";
 import GustLayout from "./Components/GustLayout";
 import DefaultLayout from "./Components/DefaultLayout";
 import SurvayView from "./Views/SurvayView";
+import SurvayPublicView from "./Components/SurvayPublicView";
 const router = createBrowserRouter ([
   {
     path:"/",
@@ -46,6 +47,10 @@ const router = createBrowserRouter ([
         element:<SignUp/>
       }
     ]
+  },
+  {
+    path:"/survay/public/:slug",
+    element:<SurvayPublicView/>
   }
 ]);
 export default router;

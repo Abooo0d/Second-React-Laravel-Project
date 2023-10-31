@@ -45,6 +45,10 @@ export default function QuestionEditor({
     console.log(model);
     setModel({ ...model });
   }
+  function deleteOption (op){
+    model.data.options = model.data.options.filter(option => option.uuid != op.uuid);
+    setModel({...model});
+  }
   return (
     <div>
       <div className="flex justify-between mb-3">
@@ -146,7 +150,10 @@ export default function QuestionEditor({
             </button>
           </h4>
           {model.data.options.length === 0 && (
-            <div className="text-xs text-gray-600 text-center py-3"></div>
+            <div className="text-xs text-gray-600 text-center "></div>
+          )}
+          {model.data.options.length === 0 && (
+            <div className="text-gray-700 text-center py-4 text-sm">You Don`t Have Any Options Defined</div>
           )}
           {model.data.options.length > 0 && (
             <div>
@@ -161,6 +168,7 @@ export default function QuestionEditor({
                   />
                   <button
                     type="button"
+                    onClick={ev => deleteOption(op)}
                     className="flex p-1  ml-2 rounded-md items-center justify-center border-2 border-transparent transition-colors hover:border-red-500 hover:text-red-500"
                   >
                     <FaTrash className="text-red-500 w-3 h-3" />

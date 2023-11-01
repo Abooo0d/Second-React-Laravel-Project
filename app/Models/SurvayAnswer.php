@@ -7,5 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SurvayAnswer extends Model
 {
-    use HasFactory;
+  use HasFactory;
+  const UPDATED_AT = null;
+  const CREATED_AT = null;
+  protected $fillable = ["survay_id","start_date","end_date"];
 }

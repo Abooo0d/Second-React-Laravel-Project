@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SurvayResource;
-use App\Models\Survay;
+use App\Http\Requests\StoreSurvayAnswerRequest;
 use App\Http\Requests\StoreSurvayRequest;
 use App\Http\Requests\UpdateSurvayRequest;
+use App\Http\Resources\SurvayResource;
+use App\Models\Survay;
+use App\Models\SurvayAnswer;
 use App\Models\SurvayQuestion;
+use App\Models\SurvayQuestionAnswer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -206,15 +209,38 @@ class SurvayController extends Controller
   }
   public function getBySlug(Survay $survay)
   {
-    if(!$survay->status){
-      return response("Not Active",404);
+    if (!$survay->status) {
+      return response("Not Active", 404);
     }
     $currenDate = new \DateTime();
     $expireDate = new \DateTime($survay->expire_date);
-    if($currenDate > $expireDate){
-      return response("Expired Date" , 404);
+    if ($currenDate > $expireDate) {
+      return response("Expired Date", 404);
     }
     return new SurvayResource($survay);
+  }
+  public function storeAnswer(StoreSurvayAnswerRequest $request,Survay $survay)
+  {
+    $validated = $request->validated();
+    // return response(["survay" => $survay]);
+    $survayAnswer = SurvayAnswer::create([
+      "survay_id" => $survay->id,
+      "start_date" => date("Y-m-d H:i:s"),
+      "end_date" => date("Y-m-d H:i:s"),
+    ]);
+    foreach ($validated["answers"] as $questionId => $answer) {
+      $question = SurvayQuestion::where(["id" => $questionId, "survay_id" => $survay->id])->get();
+      if (!$question) {
+        return response("Invalid Question ID:\"$questionId\"", 400);
+      }
+      $data = [
+        "survay_question_id" => $questionId,
+        "survay_answer_id" => $survayAnswer->id,
+        "answer" => is_array($answer) ? json_encode($answer) : $answer,
+      ];
+      $questionAnswer = SurvayQuestionAnswer::create($data);
+    }
+    return response("Success", 201);
   }
 }
 

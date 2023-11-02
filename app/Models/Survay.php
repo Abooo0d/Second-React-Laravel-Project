@@ -25,4 +25,8 @@ class Survay extends Model
   {
     return $this->hasMany(SurvayQuestion::class);
   }
+  public function answers()
+  {
+    return $this->hasMany(SurvayAnswer::class);
+  }
 }

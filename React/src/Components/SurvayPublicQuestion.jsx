@@ -6,9 +6,9 @@ export default function SurvayPublicQuestion({
   let selectedOptions = [];
   function onCheckboxChanged(option, $event) {
     if ($event.target.checked) {
-      selectedOptions.push(option.uuid);
+      selectedOptions.push(option.text);
     } else {
-      selectedOptions = selectedOptions.filter((op) => op != option.uuid);
+      selectedOptions = selectedOptions.filter((op) => op != option.text);
     }
     answerChanged(selectedOptions);
   }
@@ -40,7 +40,7 @@ export default function SurvayPublicQuestion({
             </div>
           )}
           {question.type === "radio" && (
-            <div key={index} >
+            <div key={index}>
               {question.data.options.map((option) => (
                 <div key={option.uuid} className="flex items-center mb-2">
                   <input

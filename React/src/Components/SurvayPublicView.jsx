@@ -28,9 +28,8 @@ export default function SurvayPublicView() {
   }
   function onSubmit(ev) {
     ev.preventDefault();
-    // console.log(survay);
     axiosClient
-      .post(`/survay/${survay.id}/answer`, {answers})
+      .post(`/survay/${survay.id}/answer`, { answers })
       .then((res) => {
         console.log(res);
         setSurvayFinished(true);
@@ -49,7 +48,11 @@ export default function SurvayPublicView() {
         >
           <div className="grid grid-cols-6">
             <div className="mr-4 shadow-md rounded-md">
-              <img src={survay.image_url} alt="Survay Image" className="rounded-md" />
+              <img
+                src={survay.image_url}
+                alt="Survay Image"
+                className="rounded-md"
+              />
             </div>
             <div className="col-span-5">
               <h1 className="text-3xl mb-3">{survay.title}</h1>

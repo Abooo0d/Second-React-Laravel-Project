@@ -219,10 +219,9 @@ class SurvayController extends Controller
     }
     return new SurvayResource($survay);
   }
-  public function storeAnswer(StoreSurvayAnswerRequest $request,Survay $survay)
+  public function storeAnswer(StoreSurvayAnswerRequest $request, Survay $survay)
   {
     $validated = $request->validated();
-    // return response(["survay" => $survay]);
     $survayAnswer = SurvayAnswer::create([
       "survay_id" => $survay->id,
       "start_date" => date("Y-m-d H:i:s"),
@@ -243,4 +242,3 @@ class SurvayController extends Controller
     return response("Success", 201);
   }
 }
-

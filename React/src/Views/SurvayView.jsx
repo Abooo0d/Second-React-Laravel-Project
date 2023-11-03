@@ -86,9 +86,7 @@ export default function SurvayView() {
   const onQuestionsUpdate = (questions) => {
     setSurvay({ ...survay, questions });
   };
-  const onDelete = () => {
-
-  }
+  const onDelete = () => {};
   useEffect(() => {
     if (id) {
       setLoading(true);

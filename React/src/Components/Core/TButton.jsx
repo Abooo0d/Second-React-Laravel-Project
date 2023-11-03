@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
 export default function TButton({
-    color = "indigo",
-    to = "",
-    circle = false,
-    href = "",
-    link = false,
-    target = "_blank",
-    onClickEvent = () => {},
-    children
-  }
-) {
+  color = "indigo",
+  to = "",
+  circle = false,
+  href = "",
+  link = false,
+  target = "_blank",
+  onClickEvent = () => {},
+  children,
+}) {
   let classes = [
     "flex",
     "items-center",
@@ -18,6 +17,7 @@ export default function TButton({
     "border",
     "border-2",
     "border-transparent",
+    "transition",
   ];
   if (link) {
     classes = [...classes, "transition-color"];
@@ -33,7 +33,7 @@ export default function TButton({
         break;
     }
   } else {
-    classes = [...classes,"text-white", "focus:ring-2", "focus:ring-offset-2"];
+    classes = [...classes, "text-white", "focus:ring-2", "focus:ring-offset-2"];
     switch (color) {
       case "indigo":
         classes = [
@@ -51,7 +51,7 @@ export default function TButton({
           "focus:ring-red-500",
         ];
         break;
-        case "green":
+      case "green":
         classes = [
           ...classes,
           "bg-green-600",
@@ -74,11 +74,23 @@ export default function TButton({
   } else {
     classes = [...classes, , "py-2", "px-4", "rounded-md"];
   }
-  return(
+  return (
     <>
-      {href && (<a href={href} className={classes.join(" ")}>{children}</a>)}
-      {to && (<Link to ={to} className={classes.join(" ")}>{children}</Link>)}
-      {!to && !href && (<button onClick={onClickEvent} className={classes.join(" ")}>{children}</button>)}
+      {href && (
+        <a href={href} className={classes.join(" ")}>
+          {children}
+        </a>
+      )}
+      {to && (
+        <Link to={to} className={classes.join(" ")}>
+          {children}
+        </Link>
+      )}
+      {!to && !href && (
+        <button onClick={onClickEvent} className={classes.join(" ")}>
+          {children}
+        </button>
+      )}
     </>
-  )
+  );
 }

@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
     "./src/**/**/*.{js,jsx,ts,tsx}",
+    "./src/Components/SurvayPublicView.jsx"
   ],
   theme: {
     extend: {

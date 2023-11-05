@@ -46,22 +46,28 @@ export default function SurvayPublicView() {
           onSubmit={(ev) => onSubmit(ev)}
           className="container mx-auto py-8"
         >
-          <div className="grid grid-cols-6">
-            <div className="mr-4 shadow-md rounded-md">
+          <div className="grid grid-cols-5 mb-5">
+            <div className="mr-4 shadow-md rounded-lg col-span-2 w-[400px] h-[400px] border-indigo-500 border-2">
               <img
                 src={survay.image_url}
                 alt="Survay Image"
-                className="rounded-md"
+                className="rounded-md w-full"
               />
             </div>
-            <div className="col-span-5">
-              <h1 className="text-3xl mb-3">{survay.title}</h1>
-              <p className="text-gray-700 text-sm mb-3">
+            <div className="col-span-3 flex flex-col justify-center items-start pl-2">
+              <h1 className="text-6xl my-5 text-indigo-500 ">{survay.title}</h1>
+              <p className="text-gray-600 text-md mb-5">
                 {" "}
-                Expire Date: {survay.expire_date}
+                Expire Date:
+                <span className="text-gray-800 text-lg ml-2">
+                  {survay.expire_date}
+                </span>
               </p>
-              <p className="text-gray-700 text-sm mb-3">
-                Description: {survay.description}
+              <p className="text-gray-600 text-sm mb-3">
+                Description:
+                <span className="text-gray-800 text-lg block">
+                  {survay.description}
+                </span>
               </p>
             </div>
           </div>

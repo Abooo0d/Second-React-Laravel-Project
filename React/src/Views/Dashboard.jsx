@@ -84,7 +84,10 @@ export default function Dashboard() {
                           Edit Survay
                         </span>
                       </TButton>
-                      <TButton color="green">
+                      <TButton
+                        color="green"
+                        href={`/survay/public/${data.latestSurvay.slug}`}
+                      >
                         <span className="flex justify-center items-center flex-1">
                           <BsBoxArrowUpRight className="w-5 h-5 mr-2" />
                           View Survay
